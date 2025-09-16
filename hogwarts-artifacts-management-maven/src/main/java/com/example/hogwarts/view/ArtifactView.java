@@ -3,16 +3,26 @@ package com.example.hogwarts.view;
 import com.example.hogwarts.controller.ArtifactController;
 import com.example.hogwarts.data.DataStore;
 import com.example.hogwarts.model.Artifact;
-import com.example.hogwarts.model.Wizard;
+
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-public class ArtifactView extends VBox{
+public class ArtifactView extends VBox {
     private final ArtifactController controller;
     private final TableView<Artifact> artifactTable;
     private final ObservableList<Artifact> artifactData;
@@ -22,8 +32,8 @@ public class ArtifactView extends VBox{
         this.artifactTable = new TableView<>();
         this.artifactData = FXCollections.observableArrayList(controller.findAllArtifacts());
 
-//        table fresh
-//        this.refreshTable();
+        // sorting and refresh
+        this.refreshTableAndData();
 
         setSpacing(10);
         setPadding(new Insets(10));
@@ -42,6 +52,7 @@ public class ArtifactView extends VBox{
             private final Button viewButton = new Button("View");
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
+            private final Button unassignButton = new Button("Unassign");
             private final HBox buttons = new HBox(5);
 
             {
@@ -61,7 +72,6 @@ public class ArtifactView extends VBox{
                     confirm.setTitle("Confirm Deletion");
                     confirm.setHeaderText("Delete Artifact");
                     confirm.setContentText("Are you sure you want to delete \"" + artifact.getName() + "\"?");
-
                     confirm.showAndWait().ifPresent(response -> {
                         if (response == ButtonType.OK) {
                             controller.deleteArtifact(artifact.getId());
@@ -69,6 +79,34 @@ public class ArtifactView extends VBox{
                         }
                     });
                 });
+
+                // ************************************************************************************************
+                // adding unassign button below
+                // ************************************************************************************************
+
+                unassignButton.setOnAction(e -> {
+                    Artifact artifact = getTableView().getItems().get(getIndex());
+                    if (artifact.getOwner() == null)
+                        return;
+
+                    Alert confirmUnassign = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirmUnassign.setTitle("Are you sure you want to Unassign?");
+                    confirmUnassign.setHeaderText("Unassign Artifact");
+                    confirmUnassign.setContentText("You're about to unassign \"" + artifact.getName() + "\".");
+
+                    // removing the owner
+                    confirmUnassign.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            controller.unassignArtifact(artifact.getId());
+                            artifactData.setAll(controller.findAllArtifacts());
+                        }
+                    });
+
+                });
+                // ************************************************************************************************
+                // adding unassign button above
+                // ************************************************************************************************
+
             }
 
             @Override
@@ -80,28 +118,37 @@ public class ArtifactView extends VBox{
                     buttons.getChildren().clear();
                     buttons.getChildren().add(viewButton);
                     if (DataStore.getInstance().getCurrentUser().isAdmin()) {
-                        buttons.getChildren().addAll(editButton, deleteButton);
+                        // unassign button disabled if artifact is not assigned
+                        Artifact artifact = getTableView().getItems().get(getIndex());
+                        if (artifact.getOwner() == null) {
+                            unassignButton.setDisable(true);
+                        }
+
+                        // sort the table.
+                        artifactData.sorted();
+
+                        buttons.getChildren().addAll(editButton, unassignButton, deleteButton);
                     }
                     setGraphic(buttons);
                 }
             }
         });
 
-// ************************************************************************************************
-//        adding owner column below
-// ************************************************************************************************
+        // ************************************************************************************************
+        // adding owner column below
+        // ************************************************************************************************
         TableColumn<Artifact, String> ownerCol = new TableColumn<>("Owner");
         ownerCol.setCellValueFactory(cell -> {
             Artifact artifact = cell.getValue();
-            String ownerName = (artifact.getOwner() != null)? artifact.getOwner().getName() : "No Owner";
+            String ownerName = (artifact.getOwner() != null) ? artifact.getOwner().getName() : null;
             return new ReadOnlyObjectWrapper<>(ownerName);
         });
 
-// ************************************************************************************************
-//        adding owner column above
-// ************************************************************************************************
+        // ************************************************************************************************
+        // adding owner column above
+        // ************************************************************************************************
 
-        artifactTable.getColumns().setAll(idCol, nameCol, ownerCol,actionCol);
+        artifactTable.getColumns().setAll(idCol, nameCol, ownerCol, actionCol);
         artifactTable.setItems(artifactData);
         artifactTable.setPrefHeight(300);
         return artifactTable;
@@ -145,7 +192,8 @@ public class ArtifactView extends VBox{
     }
 
     private void showEditArtifactDialog(Artifact artifact) {
-        if (artifact == null) return;
+        if (artifact == null)
+            return;
 
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Edit Artifact");
@@ -172,7 +220,8 @@ public class ArtifactView extends VBox{
     }
 
     private void showViewArtifactDialog(Artifact artifact) {
-        if (artifact == null) return;
+        if (artifact == null)
+            return;
 
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Artifact Details");
@@ -183,8 +232,7 @@ public class ArtifactView extends VBox{
                 "ID: " + artifact.getId() + "\n" +
                         "Name: " + artifact.getName() + "\n" +
                         "Description: " + artifact.getDescription() + "\n" +
-                        "Owner: " + ownerName
-        );
+                        "Owner: " + ownerName);
         details.setEditable(false);
         details.setWrapText(true);
 
@@ -196,7 +244,9 @@ public class ArtifactView extends VBox{
         dialog.showAndWait();
     }
 
-    private void refreshTable() {
+    private void refreshTableAndData() {
+        this.artifactData.setAll(controller.findAllArtifacts());
         this.artifactTable.refresh();
+        this.artifactData.sorted();
     }
 }

@@ -48,8 +48,12 @@ public class DashboardView extends BorderPane {
         artifactBtn.setMaxWidth(Double.MAX_VALUE);
         wizardBtn.setMaxWidth(Double.MAX_VALUE);
 
-        artifactBtn.setOnAction(e -> this.setCenter(artifactView));
-        wizardBtn.setOnAction(e -> this.setCenter(wizardView));
+
+//        view refreshment happens as the view being rerender.
+        artifactBtn.setOnAction(e -> {
+            this.setCenter(new  ArtifactView());
+        });
+        wizardBtn.setOnAction(e -> this.setCenter(new  WizardView()));
 
         menu.getChildren().addAll(artifactBtn, wizardBtn);
         return menu;

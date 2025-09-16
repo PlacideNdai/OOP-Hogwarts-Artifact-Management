@@ -1,10 +1,10 @@
 package com.example.hogwarts.controller;
 
-import com.example.hogwarts.data.DataStore;
-import com.example.hogwarts.model.Artifact;
-
 import java.util.Collection;
 import java.util.NoSuchElementException;
+
+import com.example.hogwarts.data.DataStore;
+import com.example.hogwarts.model.Artifact;
 
 public class ArtifactController {
     private final DataStore store = DataStore.getInstance();
@@ -29,5 +29,19 @@ public class ArtifactController {
 
     public void deleteArtifact(int id) {
         this.store.deleteArtifactById(id);
+    }
+
+    public void unassignArtifact(int id){
+        Artifact artifact = this.store.findArtifactById(id);
+
+        if( artifact == null ) {
+            throw new NoSuchElementException("Artifact with ID " + id + " not found.");
+        }
+
+        if( artifact.getOwner() == null ) {
+            throw new IllegalStateException("Artifact with ID " + id + " is not assigned to any Wizard.");
+        }
+
+        artifact.setOwner(null);
     }
 }

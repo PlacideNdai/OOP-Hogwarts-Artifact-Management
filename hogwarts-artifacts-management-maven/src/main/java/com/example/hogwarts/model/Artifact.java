@@ -20,13 +20,16 @@ public class Artifact {
     public Wizard getOwner() { return owner; }
 
     public void setId(int id) { this.id = id; }
+
     public void setName(String name) {
         this.name = Objects.requireNonNullElse(name, "name must not be null");
     }
     public void setDescription(String description) {
         this.description = Objects.requireNonNullElse(description, "description must not be null");
     }
-    void setOwner(Wizard owner) { this.owner = owner; } // package-private to restrict access
+
+// ask if I need to change this later
+    public void setOwner(Wizard owner) { this.owner = owner; } // package-private to restrict access
 
     @Override
     public String toString() {

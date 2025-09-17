@@ -3,6 +3,7 @@ package com.example.hogwarts.controller;
 import com.example.hogwarts.data.DataStore;
 import com.example.hogwarts.view.DashboardView;
 import com.example.hogwarts.view.LoginView;
+
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 

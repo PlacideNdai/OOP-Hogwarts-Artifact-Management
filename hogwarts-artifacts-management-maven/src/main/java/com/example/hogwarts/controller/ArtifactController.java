@@ -44,4 +44,15 @@ public class ArtifactController {
 
         artifact.setOwner(null);
     }
+
+    // ************************************************************************************************
+    // adding the serach feature for artifacts below
+    // ************************************************************************************************
+    public Collection<Artifact> getSearchResults(String query){
+        return this.store.findAllArtifactsByArtifactName(query);
+    }
+
+    // ************************************************************************************************
+    // adding the serach feature for artifacts above
+    // ************************************************************************************************
 }

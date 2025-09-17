@@ -1,11 +1,15 @@
 package com.example.hogwarts.data;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.example.hogwarts.model.Artifact;
-import com.example.hogwarts.model.Wizard;
 import com.example.hogwarts.model.Role;
 import com.example.hogwarts.model.User;
-
-import java.util.*;
+import com.example.hogwarts.model.Wizard;
 
 /**
  * TODO: Make this a thread-safe singleton
@@ -121,6 +125,18 @@ public class DataStore {
         return true;
     }
 
+    // ************************************************************************************************
+    // adding the serach feature for artifacts below
+    // ************************************************************************************************
+    public Collection<Artifact> findAllArtifactsByArtifactName(String artifactName){
+        return this.artifacts.values().stream().filter( a -> a.getName().contains(artifactName)).toList();
+    }
+
+    // ************************************************************************************************
+    // adding the serach feature for artifacts above
+    // ************************************************************************************************
+
+    // users
     public User getCurrentUser() {
         return currentUser;
     }

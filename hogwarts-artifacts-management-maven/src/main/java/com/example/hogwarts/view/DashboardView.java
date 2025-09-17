@@ -2,9 +2,11 @@ package com.example.hogwarts.view;
 
 import com.example.hogwarts.controller.DashboardController;
 import com.example.hogwarts.data.DataStore;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -27,7 +29,6 @@ public class DashboardView extends BorderPane {
         Label title = new Label("Hogwarts Artifacts Management System");
         Label userLabel = new Label("Logged in as: " + DataStore.getInstance().getCurrentUser().getUsername());
         Button logoutButton = new Button("Logout");
-
         logoutButton.setOnAction(e -> {
             this.controller.handleLogout(); // Assuming handleLogout is defined in the controller
         });

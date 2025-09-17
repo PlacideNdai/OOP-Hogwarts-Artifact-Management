@@ -32,12 +32,12 @@ public class ArtifactView extends VBox {
         this.artifactTable = new TableView<>();
         this.artifactData = FXCollections.observableArrayList(controller.findAllArtifacts());
 
-        // sorting and refresh
-        this.refreshTableAndData();
-
         setSpacing(10);
         setPadding(new Insets(10));
         getChildren().addAll(createTable(), createButtons());
+
+        // sorting and refresh
+        this.refreshTableAndData();
     }
 
     private TableView<Artifact> createTable() {
@@ -156,10 +156,18 @@ public class ArtifactView extends VBox {
 
     private HBox createButtons() {
         Button addBtn = new Button("Add");
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search");
         HBox box = new HBox(10);
         if (DataStore.getInstance().getCurrentUser().isAdmin()) {
             addBtn.setOnAction(e -> showAddArtifactDialog());
+
+            searchField.setOnKeyTyped(e -> {
+                showSearchResults(searchField.getText());
+            });
+            // adding serach.
             box.getChildren().add(addBtn);
+            box.getChildren().add(searchField);
         }
         return box;
     }
@@ -248,5 +256,13 @@ public class ArtifactView extends VBox {
         this.artifactData.setAll(controller.findAllArtifacts());
         this.artifactTable.refresh();
         this.artifactData.sorted();
+    }
+
+    public void showSearchResults(String query) {
+        // get the results here.
+        this.artifactData.clear();
+        this.artifactData.addAll(controller.getSearchResults(query));
+
+        this.artifactTable.refresh();
     }
 }

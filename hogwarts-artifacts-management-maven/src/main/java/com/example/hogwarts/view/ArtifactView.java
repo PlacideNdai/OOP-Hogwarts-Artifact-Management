@@ -52,6 +52,7 @@ public class ArtifactView extends VBox {
             private final Button viewButton = new Button("View");
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
+            private final Button historyButton = new Button("History");
             private final HBox buttons = new HBox(5);
 
             {
@@ -78,6 +79,11 @@ public class ArtifactView extends VBox {
                         }
                     });
                 });
+
+                historyButton.setOnAction(e -> {
+                    Artifact artifact = getTableView().getItems().get(getIndex());
+                    showHistoryDialog(artifact);
+                });
             }
 
             @Override
@@ -87,10 +93,8 @@ public class ArtifactView extends VBox {
                     setGraphic(null);
                 } else {
                     buttons.getChildren().clear();
-                    buttons.getChildren().add(viewButton);
+                    buttons.getChildren().addAll(viewButton, historyButton);
                     if (DataStore.getInstance().getCurrentUser().isAdmin()) {
-
-
                         buttons.getChildren().addAll(editButton, deleteButton);
                     }
                     setGraphic(buttons);
@@ -227,5 +231,37 @@ public class ArtifactView extends VBox {
         this.artifactData.addAll(controller.getSearchResults(query));
         // refreshTableAndData(); // remove later if it's not working.
         this.artifactTable.refresh();
+    }
+
+    // ************************************************************************************************
+    // History feature below
+    // ************************************************************************************************
+    public void showHistoryDialog(Artifact artifact){
+        if (artifact == null)
+            return;
+
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle(artifact.getName() + " History");
+        dialog.setHeaderText("Viewing: " + artifact.getName());
+        
+        TextArea historyDetails = new TextArea(
+            // for(History h :  )
+        );
+
+        // String ownerName = artifact.getOwner() != null ? artifact.getOwner().getName() : "Unassigned";
+        // TextArea details = new TextArea(
+        //         "ID: " + artifact.getId() + "\n" +
+        //                 "Name: " + artifact.getName() + "\n" +
+        //                 "Description: " + artifact.getDescription() + "\n" +
+        //                 "Owner: " + ownerName);
+        // details.setEditable(false);
+        // details.setWrapText(true);
+
+        // VBox content = new VBox(details);
+        // content.setPadding(new Insets(10));
+
+        // dialog.getDialogPane().setContent(content);
+        // dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        // dialog.showAndWait();
     }
 }

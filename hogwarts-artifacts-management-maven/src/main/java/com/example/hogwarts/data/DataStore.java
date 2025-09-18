@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.hogwarts.history.History;
 import com.example.hogwarts.model.Artifact;
 import com.example.hogwarts.model.Role;
 import com.example.hogwarts.model.User;
@@ -21,6 +22,7 @@ public class DataStore {
     private final List<User> users = new ArrayList<>();
     private final Map<Integer, Wizard> wizards = new HashMap<>();
     private final Map<Integer, Artifact> artifacts = new HashMap<>();
+    private final Map<Artifact, List<History>> artifactHistories = new HashMap<>();
 
     private int wizardIdCounter = 1; // Wizard ID generator
     private int artifactIdCounter = 1; // Artifact ID generator
@@ -123,6 +125,8 @@ public class DataStore {
             return false;
 
         wizard.addArtifact(artifact);
+        // adding to the history.
+        addToHistory(artifact.getOwner(), wizard, artifact, History.ASSIGN);
         return true;
     }
 
@@ -157,8 +161,31 @@ public class DataStore {
         if (artifact == null || wizard == null)
             return false;
 
+        // record in the history.
+        addToHistory(wizard, null, artifact, History.UNASSIGN);
         wizard.removeArtifact(artifact);
         return true;
     }
 
+
+
+
+
+    // ************************************************************************************************
+    // History feature below
+    // ************************************************************************************************
+
+    // returning the artifact history.
+    public List<History> getArtifactHistory(Artifact artifact) {
+        if (artifact == null)
+            return List.of();
+
+        return artifactHistories.getOrDefault(artifact, List.of());
+    }
+
+    // adding to the history method.
+    public void addToHistory(Wizard fromWizard, Wizard toWizard, Artifact artifact, String action) {
+        artifactHistories.computeIfAbsent(artifact, k -> new ArrayList<>())
+                .add(new History(fromWizard, toWizard, artifact, action));
+    }
 }

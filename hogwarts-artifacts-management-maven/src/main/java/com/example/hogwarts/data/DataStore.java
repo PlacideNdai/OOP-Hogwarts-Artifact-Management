@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.hogwarts.history.History;
 import com.example.hogwarts.model.Artifact;
+import com.example.hogwarts.model.History;
 import com.example.hogwarts.model.Role;
 import com.example.hogwarts.model.User;
 import com.example.hogwarts.model.Wizard;

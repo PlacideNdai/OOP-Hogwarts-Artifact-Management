@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import com.example.hogwarts.data.DataStore;
 import com.example.hogwarts.model.Artifact;
+import com.example.hogwarts.model.History;
 
 public class ArtifactController {
     private final DataStore store = DataStore.getInstance();
@@ -39,6 +40,9 @@ public class ArtifactController {
     }
 
     // ************************************************************************************************
-    // adding the serach feature for artifacts above
+    // adding the history feature below
     // ************************************************************************************************
+    public Collection<History>getArtifactHistory(Artifact artifact){
+        return this.store.getArtifactHistory(artifact);
+    }
 }

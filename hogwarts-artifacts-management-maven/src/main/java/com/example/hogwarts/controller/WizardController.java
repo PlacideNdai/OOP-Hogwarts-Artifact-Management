@@ -22,7 +22,7 @@ public class WizardController {
 
     public void updateWizard(int id, String newName) {
         Wizard wizard = this.store.findWizardById(id);
-        if(wizard == null) {
+        if (wizard == null) {
             throw new IllegalArgumentException("Wizard with ID " + id + " not found.");
         }
         wizard.setName(newName);
@@ -45,15 +45,16 @@ public class WizardController {
     // ************************************************************************************************
     // unassigning the artifact below
     // ************************************************************************************************
-    public void unassignWizardArtifact(Artifact artifact){
-        if(artifact == null){
+    public void unassignWizardArtifact(Artifact artifact) {
+        if (artifact == null) {
             return;
         }
 
-        if(artifact.getOwner() == null){
+        if (artifact.getOwner() == null) {
             throw new IllegalStateException("Artifact with ID " + artifact.getId() + " is not assigned to any Wizard.");
         }
 
+        // updating the DB.
         this.store.unassignArtifact(artifact.getId(), artifact.getOwner().getId());
     }
 }

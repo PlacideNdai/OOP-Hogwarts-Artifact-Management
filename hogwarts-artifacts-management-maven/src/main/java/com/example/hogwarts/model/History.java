@@ -1,9 +1,6 @@
-package com.example.hogwarts.history;
+package com.example.hogwarts.model;
 
 import java.time.LocalDateTime;
-
-import com.example.hogwarts.model.Artifact;
-import com.example.hogwarts.model.Wizard;
 
 public class History {
     private final LocalDateTime timestamp;
@@ -44,11 +41,12 @@ public class History {
 
     @Override
     public String toString() {
-        return "History{" +
-                "timestamp=" + timestamp +
-                ", fromWizard='" + fromWizard + '\'' +
-                ", toWizard='" + toWizard + '\'' +
-                ", action='" + action + '\'' +
-                '}';
+        String from = (fromWizard != null) ? fromWizard.getName() : "Unassigned";
+        String to = (toWizard != null) ? toWizard.getName() : "Unassigned";
+
+        return "Action: " + action + "\n" +
+                "From: " + from + "\n" +
+                "To: " + to + '\n' +
+                "Artifact: " + artifact.getName() + "\n\n";
     }
 }

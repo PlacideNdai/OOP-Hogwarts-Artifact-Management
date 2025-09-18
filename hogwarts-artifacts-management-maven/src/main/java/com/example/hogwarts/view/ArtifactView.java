@@ -3,6 +3,7 @@ package com.example.hogwarts.view;
 import com.example.hogwarts.controller.ArtifactController;
 import com.example.hogwarts.data.DataStore;
 import com.example.hogwarts.model.Artifact;
+import com.example.hogwarts.model.History;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -221,7 +222,6 @@ public class ArtifactView extends VBox {
         dialog.showAndWait();
     }
 
-
     // ************************************************************************************************
     // adding serach feature below
     // ************************************************************************************************
@@ -236,32 +236,30 @@ public class ArtifactView extends VBox {
     // ************************************************************************************************
     // History feature below
     // ************************************************************************************************
-    public void showHistoryDialog(Artifact artifact){
+    public void showHistoryDialog(Artifact artifact) {
         if (artifact == null)
             return;
 
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle(artifact.getName() + " History");
         dialog.setHeaderText("Viewing: " + artifact.getName());
-        
-        TextArea historyDetails = new TextArea(
-            // for(History h :  )
-        );
 
-        // String ownerName = artifact.getOwner() != null ? artifact.getOwner().getName() : "Unassigned";
-        // TextArea details = new TextArea(
-        //         "ID: " + artifact.getId() + "\n" +
-        //                 "Name: " + artifact.getName() + "\n" +
-        //                 "Description: " + artifact.getDescription() + "\n" +
-        //                 "Owner: " + ownerName);
-        // details.setEditable(false);
-        // details.setWrapText(true);
+        StringBuilder historyDetailsText = new StringBuilder();
 
-        // VBox content = new VBox(details);
-        // content.setPadding(new Insets(10));
+        for (History h : controller.getArtifactHistory(artifact)) {
+            historyDetailsText.append(h.toString()).append("\n");
+        };
 
-        // dialog.getDialogPane().setContent(content);
-        // dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-        // dialog.showAndWait();
+        TextArea historyDetails = new TextArea(historyDetailsText.toString());
+
+        historyDetails.setEditable(false);
+        historyDetails.setWrapText(true);
+
+        VBox content = new VBox(historyDetails);
+        content.setPadding(new Insets(10));
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
     }
 }

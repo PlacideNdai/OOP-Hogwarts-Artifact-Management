@@ -1,18 +1,31 @@
 package com.example.hogwarts.view;
 
+import java.util.List;
+
 import com.example.hogwarts.controller.WizardController;
 import com.example.hogwarts.data.DataStore;
 import com.example.hogwarts.model.Artifact;
 import com.example.hogwarts.model.Wizard;
+
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-public class WizardView extends VBox{
+public class WizardView extends VBox {
     private final WizardController controller;
     private final TableView<Wizard> wizardTable;
     private final ObservableList<Wizard> wizardData;
@@ -41,6 +54,7 @@ public class WizardView extends VBox{
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
             private final Button assignButton = new Button("Assign");
+            private final Button unassignButton = new Button("Unassign");
             private final HBox buttons = new HBox(5);
 
             {
@@ -59,7 +73,8 @@ public class WizardView extends VBox{
                     Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
                     confirm.setTitle("Confirm Deletion");
                     confirm.setHeaderText("Delete Wizard");
-                    confirm.setContentText("Are you sure you want to delete \"" + wizard.getName() + "\" and unassign their artifacts?");
+                    confirm.setContentText("Are you sure you want to delete \"" + wizard.getName()
+                            + "\" and unassign their artifacts?");
                     confirm.showAndWait().ifPresent(response -> {
                         if (response == ButtonType.OK) {
                             controller.deleteWizard(wizard.getId());
@@ -67,6 +82,20 @@ public class WizardView extends VBox{
                         }
                     });
                 });
+
+                // ************************************************************************************************
+                // adding unassign button below
+                // ************************************************************************************************
+
+                unassignButton.setOnAction(e -> {
+                    // fetch the wizard.
+                    Wizard wizardArtifacts = getTableView().getItems().get(getIndex());
+                    unassignWizardArtifact(wizardArtifacts);
+
+                });
+                // ************************************************************************************************
+                // adding unassign button above
+                // ************************************************************************************************
 
                 assignButton.setOnAction(e -> {
                     Wizard wizard = getTableView().getItems().get(getIndex());
@@ -80,10 +109,24 @@ public class WizardView extends VBox{
                 if (empty || getIndex() >= wizardData.size()) {
                     setGraphic(null);
                 } else {
+                    // ************************************************************************************************
+                    // checking before hand if the wizard has artifacts.
+                    // ************************************************************************************************
+                    Wizard wizard = getTableView().getItems().get(getIndex());
+                    if (wizard.getArtifacts().isEmpty()) {
+                        unassignButton.setDisable(true);
+                    } else {
+                        unassignButton.setDisable(false);
+                    }
+
+                    // ************************************************************************************************
+                    // checking before hand if the wizard is assigned to any artifact.
+                    // ************************************************************************************************
+
                     buttons.getChildren().clear();
                     buttons.getChildren().add(viewButton);
                     if (DataStore.getInstance().getCurrentUser().isAdmin()) {
-                        buttons.getChildren().addAll(editButton, deleteButton, assignButton);
+                        buttons.getChildren().addAll(editButton, deleteButton, assignButton, unassignButton);
                     }
                     setGraphic(buttons);
                 }
@@ -93,6 +136,35 @@ public class WizardView extends VBox{
         wizardTable.getColumns().setAll(idCol, nameCol, actionCol);
         wizardTable.setItems(wizardData);
         wizardTable.setPrefHeight(300);
+
+// ************************************************************************************************
+// sorting the table below
+// ************************************************************************************************
+        // nameCol.setComparator((a, b) -> {
+        //     boolean nameAIsEmpty = (a == null || a.isBlank());
+        //     boolean nameBIsEmpty = (b == null || b.isBlank());
+
+        //     if (nameAIsEmpty && nameBIsEmpty) {
+        //         return 0;
+        //     }
+
+        //     if (nameAIsEmpty) {
+        //         return -1;
+        //     }
+
+        //     if (nameBIsEmpty) {
+        //         return 1;
+        //     }
+
+        //     return a.compareToIgnoreCase(b);
+        // });
+
+        // wizardTable.getSortOrder().add(nameCol);
+
+// ************************************************************************************************
+// sorting the table above
+// ************************************************************************************************
+
         return wizardTable;
     }
 
@@ -121,7 +193,8 @@ public class WizardView extends VBox{
     }
 
     private void showEditWizardDialog(Wizard wizard) {
-        if (wizard == null) return;
+        if (wizard == null)
+            return;
 
         TextInputDialog dialog = new TextInputDialog(wizard.getName());
         dialog.setTitle("Edit Wizard");
@@ -132,6 +205,30 @@ public class WizardView extends VBox{
                 controller.updateWizard(wizard.getId(), name);
                 wizardData.setAll(controller.findAllWizards());
             }
+        });
+    }
+
+    // *************************************************************************************
+    // un assigning function/methiod/
+    // *************************************************************************************
+
+    private void unassignWizardArtifact(Wizard wizard) {
+        if (wizard == null) {
+            return;
+        }
+
+        // show the popup for all the artifacts.
+        // fetch the artifacts and show them as a list dropdown.
+        // select and then drop.
+        List<Artifact> wizardArtifacts = wizard.getArtifacts();
+        ChoiceDialog<Artifact> toUnassignArtifacts = new ChoiceDialog<>(wizardArtifacts.get(0), wizardArtifacts);
+        toUnassignArtifacts.setTitle("Unassign Artifact");
+        toUnassignArtifacts.setHeaderText("Unassiging " + wizard.getName() + " Artifact.");
+
+        toUnassignArtifacts.showAndWait().ifPresent(artifact -> {
+            controller.unassignWizardArtifact(artifact);
+            wizardData.setAll(controller.findAllWizards());
+            wizardTable.getSelectionModel().select(wizard);
         });
     }
 
@@ -157,7 +254,8 @@ public class WizardView extends VBox{
     }
 
     private void showViewWizardDialog(Wizard wizard) {
-        if (wizard == null) return;
+        if (wizard == null)
+            return;
 
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Wizard Details");
@@ -183,4 +281,3 @@ public class WizardView extends VBox{
         dialog.showAndWait();
     }
 }
-

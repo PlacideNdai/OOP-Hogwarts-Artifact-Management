@@ -29,15 +29,15 @@ public class ArtifactView extends VBox {
 
     public ArtifactView() {
         this.controller = new ArtifactController();
+        // refreshTableAndData(); // refresh the table and remove this later if it's not
+        // working.
+
         this.artifactTable = new TableView<>();
         this.artifactData = FXCollections.observableArrayList(controller.findAllArtifacts());
 
         setSpacing(10);
         setPadding(new Insets(10));
         getChildren().addAll(createTable(), createButtons());
-
-        // sorting and refresh
-        this.refreshTableAndData();
     }
 
     private TableView<Artifact> createTable() {
@@ -52,7 +52,6 @@ public class ArtifactView extends VBox {
             private final Button viewButton = new Button("View");
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
-            private final Button unassignButton = new Button("Unassign");
             private final HBox buttons = new HBox(5);
 
             {
@@ -79,34 +78,6 @@ public class ArtifactView extends VBox {
                         }
                     });
                 });
-
-                // ************************************************************************************************
-                // adding unassign button below
-                // ************************************************************************************************
-
-                unassignButton.setOnAction(e -> {
-                    Artifact artifact = getTableView().getItems().get(getIndex());
-                    if (artifact.getOwner() == null)
-                        return;
-
-                    Alert confirmUnassign = new Alert(Alert.AlertType.CONFIRMATION);
-                    confirmUnassign.setTitle("Are you sure you want to Unassign?");
-                    confirmUnassign.setHeaderText("Unassign Artifact");
-                    confirmUnassign.setContentText("You're about to unassign \"" + artifact.getName() + "\".");
-
-                    // removing the owner
-                    confirmUnassign.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            controller.unassignArtifact(artifact.getId());
-                            artifactData.setAll(controller.findAllArtifacts());
-                        }
-                    });
-
-                });
-                // ************************************************************************************************
-                // adding unassign button above
-                // ************************************************************************************************
-
             }
 
             @Override
@@ -118,16 +89,9 @@ public class ArtifactView extends VBox {
                     buttons.getChildren().clear();
                     buttons.getChildren().add(viewButton);
                     if (DataStore.getInstance().getCurrentUser().isAdmin()) {
-                        // unassign button disabled if artifact is not assigned
-                        Artifact artifact = getTableView().getItems().get(getIndex());
-                        if (artifact.getOwner() == null) {
-                            unassignButton.setDisable(true);
-                        }
 
-                        // sort the table.
-                        artifactData.sorted();
 
-                        buttons.getChildren().addAll(editButton, unassignButton, deleteButton);
+                        buttons.getChildren().addAll(editButton, deleteButton);
                     }
                     setGraphic(buttons);
                 }
@@ -151,6 +115,7 @@ public class ArtifactView extends VBox {
         artifactTable.getColumns().setAll(idCol, nameCol, ownerCol, actionCol);
         artifactTable.setItems(artifactData);
         artifactTable.setPrefHeight(300);
+
         return artifactTable;
     }
 
@@ -252,17 +217,15 @@ public class ArtifactView extends VBox {
         dialog.showAndWait();
     }
 
-    private void refreshTableAndData() {
-        this.artifactData.setAll(controller.findAllArtifacts());
-        this.artifactTable.refresh();
-        this.artifactData.sorted();
-    }
 
+    // ************************************************************************************************
+    // adding serach feature below
+    // ************************************************************************************************
     public void showSearchResults(String query) {
         // get the results here.
         this.artifactData.clear();
         this.artifactData.addAll(controller.getSearchResults(query));
-
+        // refreshTableAndData(); // remove later if it's not working.
         this.artifactTable.refresh();
     }
 }

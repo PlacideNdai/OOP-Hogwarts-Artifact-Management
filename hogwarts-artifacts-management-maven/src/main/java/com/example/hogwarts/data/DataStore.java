@@ -119,7 +119,8 @@ public class DataStore {
     public boolean assignArtifactToWizard(int artifactId, int wizardId) {
         Artifact artifact = this.artifacts.get(artifactId);
         Wizard wizard = this.wizards.get(wizardId);
-        if (artifact == null || wizard == null) return false;
+        if (artifact == null || wizard == null)
+            return false;
 
         wizard.addArtifact(artifact);
         return true;
@@ -128,8 +129,8 @@ public class DataStore {
     // ************************************************************************************************
     // adding the serach feature for artifacts below
     // ************************************************************************************************
-    public Collection<Artifact> findAllArtifactsByArtifactName(String artifactName){
-        return this.artifacts.values().stream().filter( a -> a.getName().contains(artifactName)).toList();
+    public Collection<Artifact> findAllArtifactsByArtifactName(String artifactName) {
+        return this.artifacts.values().stream().filter(a -> a.getName().contains(artifactName)).toList();
     }
 
     // ************************************************************************************************
@@ -145,6 +146,19 @@ public class DataStore {
         this.currentUser = currentUser;
     }
 
+    // ************************************************************************************************
+    // updating the DB after unassign artifact below
+    // ************************************************************************************************
 
+    public boolean unassignArtifact(int artifactId, int wizardId) {
+        Artifact artifact = this.artifacts.get(artifactId);
+        Wizard wizard = this.wizards.get(wizardId);
+
+        if (artifact == null || wizard == null)
+            return false;
+
+        wizard.removeArtifact(artifact);
+        return true;
+    }
 
 }

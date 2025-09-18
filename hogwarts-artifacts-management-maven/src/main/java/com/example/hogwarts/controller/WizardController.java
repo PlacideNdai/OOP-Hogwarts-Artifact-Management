@@ -1,12 +1,12 @@
 package com.example.hogwarts.controller;
 
-import com.example.hogwarts.data.DataStore;
-import com.example.hogwarts.model.Artifact;
-import com.example.hogwarts.model.Wizard;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.example.hogwarts.data.DataStore;
+import com.example.hogwarts.model.Artifact;
+import com.example.hogwarts.model.Wizard;
 
 public class WizardController {
     private final DataStore store = DataStore.getInstance();
@@ -40,5 +40,20 @@ public class WizardController {
         return this.store.findAllArtifacts().stream()
                 .filter(a -> a.getOwner() == null)
                 .collect(Collectors.toList());
+    }
+
+    // ************************************************************************************************
+    // unassigning the artifact below
+    // ************************************************************************************************
+    public void unassignWizardArtifact(Artifact artifact){
+        if(artifact == null){
+            return;
+        }
+
+        if(artifact.getOwner() == null){
+            throw new IllegalStateException("Artifact with ID " + artifact.getId() + " is not assigned to any Wizard.");
+        }
+
+        this.store.unassignArtifact(artifact.getId(), artifact.getOwner().getId());
     }
 }

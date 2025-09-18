@@ -31,19 +31,20 @@ public class ArtifactController {
         this.store.deleteArtifactById(id);
     }
 
-    public void unassignArtifact(int id){
-        Artifact artifact = this.store.findArtifactById(id);
+    // // update this later.
+    // public void unassignArtifact(int id){
+    //     Artifact artifact = this.store.findArtifactById(id);
 
-        if( artifact == null ) {
-            throw new NoSuchElementException("Artifact with ID " + id + " not found.");
-        }
+    //     if( artifact == null ) {
+    //         throw new NoSuchElementException("Artifact with ID " + id + " not found.");
+    //     }
 
-        if( artifact.getOwner() == null ) {
-            throw new IllegalStateException("Artifact with ID " + id + " is not assigned to any Wizard.");
-        }
+    //     if( artifact.getOwner() == null ) {
+    //         throw new IllegalStateException("Artifact with ID " + id + " is not assigned to any Wizard.");
+    //     }
 
-        artifact.setOwner(null);
-    }
+    //     // artifact.setOwner(null);
+    // }
 
     // ************************************************************************************************
     // adding the serach feature for artifacts below

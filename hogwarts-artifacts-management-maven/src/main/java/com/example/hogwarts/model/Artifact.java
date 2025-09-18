@@ -29,7 +29,7 @@ public class Artifact {
     }
 
 // ask if I need to change this later
-    public void setOwner(Wizard owner) { this.owner = owner; } // package-private to restrict access
+    void setOwner(Wizard owner) { this.owner = owner; } // package-private to restrict access
 
     @Override
     public String toString() {

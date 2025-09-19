@@ -205,7 +205,9 @@ public class ArtifactView extends VBox {
         dialog.setTitle("Artifact Details");
         dialog.setHeaderText("Viewing: " + artifact.getName());
 
+        //  owner name and artifact quality.
         String ownerName = artifact.getOwner() != null ? artifact.getOwner().getName() : "Unassigned";
+        // Double quality
         TextArea details = new TextArea(
                 "ID: " + artifact.getId() + "\n" +
                         "Name: " + artifact.getName() + "\n" +

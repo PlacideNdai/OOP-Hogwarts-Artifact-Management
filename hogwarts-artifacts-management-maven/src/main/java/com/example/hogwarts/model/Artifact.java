@@ -7,6 +7,7 @@ public class Artifact {
     private String name;
     private String description;
     private Wizard owner; // can be null
+    // private Double quality;
 
     public Artifact(String name, String description) {
         this.name = Objects.requireNonNullElse(name, "name must not be null");

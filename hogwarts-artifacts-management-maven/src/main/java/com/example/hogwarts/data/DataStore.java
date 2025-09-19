@@ -124,9 +124,9 @@ public class DataStore {
         if (artifact == null || wizard == null)
             return false;
 
-        wizard.addArtifact(artifact);
         // adding to the history.
         addToHistory(artifact.getOwner(), wizard, artifact, History.ASSIGN);
+        wizard.addArtifact(artifact);
         return true;
     }
 
@@ -166,10 +166,6 @@ public class DataStore {
         wizard.removeArtifact(artifact);
         return true;
     }
-
-
-
-
 
     // ************************************************************************************************
     // History feature below

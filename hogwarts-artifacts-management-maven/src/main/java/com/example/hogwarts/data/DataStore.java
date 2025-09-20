@@ -46,10 +46,10 @@ public class DataStore {
         this.addWizard(w3);
         this.addWizard(w4);
 
-        Artifact a1 = new Artifact("Invisibility Cloak", "A magical cloak that makes the wearer invisible.");
-        Artifact a2 = new Artifact("Time-Turner", "A device used for time travel.");
-        Artifact a3 = new Artifact("Iron man suit", "A robotic suit.");
-        Artifact a4 = new Artifact("Thor Hammer", "Thunders coming for destruction");
+        Artifact a1 = new Artifact("Invisibility Cloak", "A magical cloak that makes the wearer invisible.", 100);
+        Artifact a2 = new Artifact("Time-Turner", "A device used for time travel.", 100);
+        Artifact a3 = new Artifact("Iron man suit", "A robotic suit.", 100);
+        Artifact a4 = new Artifact("Thor Hammer", "Thunders coming for destruction", 100);
         this.addArtifact(a1);
         this.addArtifact(a2);
         this.addArtifact(a3);
@@ -124,6 +124,12 @@ public class DataStore {
         if (artifact == null || wizard == null)
             return false;
 
+        // quality check.
+        if(artifact.getQuality() < artifact.MINMAL_TRADE_QUALITY){
+            return false;
+        }
+
+        artifact.setMinusQuality(artifact);
         // adding to the history.
         addToHistory(artifact.getOwner(), wizard, artifact, History.ASSIGN);
         wizard.addArtifact(artifact);

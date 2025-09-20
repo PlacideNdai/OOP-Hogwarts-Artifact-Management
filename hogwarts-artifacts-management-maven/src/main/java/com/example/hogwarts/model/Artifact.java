@@ -7,30 +7,62 @@ public class Artifact {
     private String name;
     private String description;
     private Wizard owner; // can be null
-    // private Double quality;
+    private int quality;
+    public final int MINUS_QUALITY = 5;
+    public final int MINMAL_TRADE_QUALITY = 10;
 
-    public Artifact(String name, String description) {
+    public Artifact(String name, String description, int quality) {
         this.name = Objects.requireNonNullElse(name, "name must not be null");
         this.description = Objects.requireNonNullElse(description, "description must not be null");
         this.owner = null;
+        this.quality = quality;
     }
 
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public String getDescription() { return description; }
-    public Wizard getOwner() { return owner; }
+    public int getId() {
+        return id;
+    }
 
-    public void setId(int id) { this.id = id; }
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Wizard getOwner() {
+        return owner;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void setName(String name) {
         this.name = Objects.requireNonNullElse(name, "name must not be null");
     }
+
     public void setDescription(String description) {
         this.description = Objects.requireNonNullElse(description, "description must not be null");
     }
 
-// ask if I need to change this later
-    void setOwner(Wizard owner) { this.owner = owner; } // package-private to restrict access
+    public void setQuality(int quality) {
+        this.quality = quality;
+    }
+
+    public int getQuality() {
+        return quality;
+    }
+
+    void setOwner(Wizard owner) {
+        this.owner = owner;
+    } // package-private to restrict access
+
+    public void setMinusQuality(Artifact artifact) {
+        if (artifact.getQuality() > 0) {
+            this.quality = this.quality - this.MINUS_QUALITY;
+        }
+    }
 
     @Override
     public String toString() {

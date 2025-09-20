@@ -5,6 +5,7 @@ import com.example.hogwarts.data.DataStore;
 import com.example.hogwarts.model.Artifact;
 import com.example.hogwarts.model.History;
 
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -104,6 +105,13 @@ public class ArtifactView extends VBox {
         });
 
         // ************************************************************************************************
+        // adding quality column below
+        // ************************************************************************************************
+
+        TableColumn<Artifact, Integer> qualityCol = new TableColumn<>("Quality");
+        qualityCol.setCellValueFactory(cell -> new ReadOnlyIntegerWrapper(cell.getValue().getQuality()).asObject());
+
+        // ************************************************************************************************
         // adding owner column below
         // ************************************************************************************************
         TableColumn<Artifact, String> ownerCol = new TableColumn<>("Owner");
@@ -117,7 +125,7 @@ public class ArtifactView extends VBox {
         // adding owner column above
         // ************************************************************************************************
 
-        artifactTable.getColumns().setAll(idCol, nameCol, ownerCol, actionCol);
+        artifactTable.getColumns().setAll(idCol, nameCol, ownerCol, actionCol, qualityCol);
         artifactTable.setItems(artifactData);
         artifactTable.setPrefHeight(300);
 
@@ -149,8 +157,15 @@ public class ArtifactView extends VBox {
 
         TextField nameField = new TextField();
         TextArea descField = new TextArea();
+        TextField qualityField = new TextField();
+        int quality = 0;
+        
+        // check if the quality is a number
+        if(!qualityField.getText().isEmpty()) {
+            Integer.parseInt(qualityField.getText());
+        }
 
-        VBox content = new VBox(10, new Label("Name:"), nameField, new Label("Description:"), descField);
+        VBox content = new VBox(10, new Label("Name:"), nameField, new Label("Description:"), descField, new Label("Quality:"), qualityField);
         content.setPadding(new Insets(10));
 
         dialog.getDialogPane().setContent(content);
@@ -158,7 +173,7 @@ public class ArtifactView extends VBox {
 
         dialog.setResultConverter(button -> {
             if (button == ButtonType.OK) {
-                return controller.addArtifact(nameField.getText(), descField.getText());
+                return controller.addArtifact(nameField.getText(), descField.getText(), quality);
             }
             return null;
         });
@@ -212,7 +227,8 @@ public class ArtifactView extends VBox {
                 "ID: " + artifact.getId() + "\n" +
                         "Name: " + artifact.getName() + "\n" +
                         "Description: " + artifact.getDescription() + "\n" +
-                        "Owner: " + ownerName);
+                        "Owner: " + ownerName + "\n" +
+                        "Quality: " + artifact.getQuality());
         details.setEditable(false);
         details.setWrapText(true);
 
@@ -244,7 +260,7 @@ public class ArtifactView extends VBox {
 
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle(artifact.getName() + " History");
-        dialog.setHeaderText("Viewing: " + artifact.getName());
+        dialog.setHeaderText("Viewing: " + artifact.getName() + "History");
 
         StringBuilder historyDetailsText = new StringBuilder();
 

@@ -14,8 +14,8 @@ public class ArtifactController {
         return this.store.findAllArtifacts();
     }
 
-    public Artifact addArtifact(String name, String description) {
-        Artifact artifact = new Artifact(name, description);
+    public Artifact addArtifact(String name, String description, Integer quality) {
+        Artifact artifact = new Artifact(name, description, quality);
         return this.store.addArtifact(artifact);
     }
 

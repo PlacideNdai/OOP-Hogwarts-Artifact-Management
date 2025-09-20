@@ -15,7 +15,7 @@ public class Artifact {
         this.name = Objects.requireNonNullElse(name, "name must not be null");
         this.description = Objects.requireNonNullElse(description, "description must not be null");
         this.owner = null;
-        this.quality = quality;
+        setQualityClamped(quality);
     }
 
     public int getId() {
@@ -62,6 +62,10 @@ public class Artifact {
         if (artifact.getQuality() > 0) {
             this.quality = this.quality - this.MINUS_QUALITY;
         }
+    }
+
+    void setQualityClamped(int quality) {
+        this.quality = Math.max(0, Math.min(100, quality));
     }
 
     @Override

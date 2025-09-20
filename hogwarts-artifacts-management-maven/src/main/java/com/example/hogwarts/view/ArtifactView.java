@@ -158,21 +158,23 @@ public class ArtifactView extends VBox {
         TextField nameField = new TextField();
         TextArea descField = new TextArea();
         TextField qualityField = new TextField();
-        int quality = 0;
-        
-        // check if the quality is a number
-        if(!qualityField.getText().isEmpty()) {
-            Integer.parseInt(qualityField.getText());
-        }
+        // final int[] quality = { 0 };
 
-        VBox content = new VBox(10, new Label("Name:"), nameField, new Label("Description:"), descField, new Label("Quality:"), qualityField);
+        VBox content = new VBox(10, new Label("Name:"), nameField, new Label("Description:"), descField,
+                new Label("Quality:"), qualityField);
         content.setPadding(new Insets(10));
 
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
         dialog.setResultConverter(button -> {
+            int quality = 0;
             if (button == ButtonType.OK) {
+                // check if the quality is a number
+                if (!qualityField.getText().isEmpty()) {
+                    quality = tryCatchNumber(qualityField.getText());
+                }
+
                 return controller.addArtifact(nameField.getText(), descField.getText(), quality);
             }
             return null;
@@ -194,8 +196,10 @@ public class ArtifactView extends VBox {
 
         TextField nameField = new TextField(artifact.getName());
         TextArea descField = new TextArea(artifact.getDescription());
+        TextField qualityField = new TextField(Integer.toString(artifact.getQuality()));
 
-        VBox content = new VBox(10, new Label("Name:"), nameField, new Label("Description:"), descField);
+        VBox content = new VBox(10, new Label("Name:"), nameField, new Label("Description:"), descField,
+                new Label("Quality:"), qualityField);
         content.setPadding(new Insets(10));
 
         dialog.getDialogPane().setContent(content);
@@ -203,7 +207,10 @@ public class ArtifactView extends VBox {
 
         dialog.setResultConverter(button -> {
             if (button == ButtonType.OK) {
-                controller.updateArtifact(artifact.getId(), nameField.getText(), descField.getText());
+                // check if the quality is a number
+                int quality = tryCatchNumber(qualityField.getText());
+
+                controller.updateArtifact(artifact.getId(), nameField.getText(), descField.getText(), quality);
                 artifactData.setAll(controller.findAllArtifacts());
             }
             return null;
@@ -220,7 +227,7 @@ public class ArtifactView extends VBox {
         dialog.setTitle("Artifact Details");
         dialog.setHeaderText("Viewing: " + artifact.getName());
 
-        //  owner name and artifact quality.
+        // owner name and artifact quality.
         String ownerName = artifact.getOwner() != null ? artifact.getOwner().getName() : "Unassigned";
         // Double quality
         TextArea details = new TextArea(
@@ -266,7 +273,8 @@ public class ArtifactView extends VBox {
 
         for (History h : controller.getArtifactHistory(artifact)) {
             historyDetailsText.append(h.toString()).append("\n");
-        };
+        }
+        ;
 
         TextArea historyDetails = new TextArea(historyDetailsText.toString());
 
@@ -279,5 +287,13 @@ public class ArtifactView extends VBox {
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.showAndWait();
+    }
+
+    Integer tryCatchNumber(String qualityField) {
+        try {
+            return Integer.parseInt(qualityField);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

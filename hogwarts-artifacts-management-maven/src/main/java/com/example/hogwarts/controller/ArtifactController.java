@@ -19,13 +19,14 @@ public class ArtifactController {
         return this.store.addArtifact(artifact);
     }
 
-    public void updateArtifact(int id, String newName, String newDesc) {
+    public void updateArtifact(int id, String newName, String newDesc, int quality) {
         Artifact artifact = this.store.findArtifactById(id);
         if(artifact == null) {
             throw new NoSuchElementException("Artifact with ID " + id + " not found.");
         }
         artifact.setName(newName);
         artifact.setDescription(newDesc);
+        artifact.setQuality(quality);
     }
 
     public void deleteArtifact(int id) {

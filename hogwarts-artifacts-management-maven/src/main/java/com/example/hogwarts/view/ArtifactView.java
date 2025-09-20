@@ -1,5 +1,7 @@
 package com.example.hogwarts.view;
 
+import java.util.Comparator;
+
 import com.example.hogwarts.controller.ArtifactController;
 import com.example.hogwarts.data.DataStore;
 import com.example.hogwarts.model.Artifact;
@@ -10,6 +12,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -21,6 +24,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -28,14 +32,19 @@ public class ArtifactView extends VBox {
     private final ArtifactController controller;
     private final TableView<Artifact> artifactTable;
     private final ObservableList<Artifact> artifactData;
+    private SortedList<Artifact> sortedArtifactData;
 
     public ArtifactView() {
         this.controller = new ArtifactController();
-        // refreshTableAndData(); // refresh the table and remove this later if it's not
-        // working.
-
         this.artifactTable = new TableView<>();
         this.artifactData = FXCollections.observableArrayList(controller.findAllArtifacts());
+
+        // sorting the data before putting in the tbale.
+        this.sortedArtifactData = new SortedList<>(artifactData);
+        sortedArtifactData.setComparator(
+                Comparator.comparing(
+                        (Artifact a) -> a.getOwner() != null ? a.getOwner().getName() : null,
+                        Comparator.nullsLast(String::compareToIgnoreCase)));
 
         setSpacing(10);
         setPadding(new Insets(10));
@@ -126,7 +135,7 @@ public class ArtifactView extends VBox {
         // ************************************************************************************************
 
         artifactTable.getColumns().setAll(idCol, nameCol, ownerCol, actionCol, qualityCol);
-        artifactTable.setItems(artifactData);
+        artifactTable.setItems(sortedArtifactData);
         artifactTable.setPrefHeight(300);
 
         return artifactTable;
@@ -157,8 +166,16 @@ public class ArtifactView extends VBox {
 
         TextField nameField = new TextField();
         TextArea descField = new TextArea();
+
+        // adding quality field below and allowing numbers only.
         TextField qualityField = new TextField();
-        // final int[] quality = { 0 };
+        qualityField.setTextFormatter(new TextFormatter<>(change -> {
+            if (change.getControlNewText().matches("\\d*")) {
+                return change;
+            } else {
+                return null;
+            }
+        }));
 
         VBox content = new VBox(10, new Label("Name:"), nameField, new Label("Description:"), descField,
                 new Label("Quality:"), qualityField);
@@ -196,7 +213,19 @@ public class ArtifactView extends VBox {
 
         TextField nameField = new TextField(artifact.getName());
         TextArea descField = new TextArea(artifact.getDescription());
+
+        // ************************************************************************************************
+        // editing quality field below and allowing numbers only.
+        // ************************************************************************************************
+
         TextField qualityField = new TextField(Integer.toString(artifact.getQuality()));
+        qualityField.setTextFormatter(new TextFormatter<>(change -> {
+            if (change.getControlNewText().matches("\\d*")) {
+                return change;
+            } else {
+                return null;
+            }
+        }));
 
         VBox content = new VBox(10, new Label("Name:"), nameField, new Label("Description:"), descField,
                 new Label("Quality:"), qualityField);

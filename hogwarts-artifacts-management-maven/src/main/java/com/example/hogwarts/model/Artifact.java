@@ -15,7 +15,7 @@ public class Artifact {
         this.name = Objects.requireNonNullElse(name, "name must not be null");
         this.description = Objects.requireNonNullElse(description, "description must not be null");
         this.owner = null;
-        setQualityClamped(quality);
+        setQuality(quality);
     }
 
     public int getId() {
@@ -46,10 +46,6 @@ public class Artifact {
         this.description = Objects.requireNonNullElse(description, "description must not be null");
     }
 
-    public void setQuality(int quality) {
-        this.quality = quality;
-    }
-
     public int getQuality() {
         return quality;
     }
@@ -64,7 +60,7 @@ public class Artifact {
         }
     }
 
-    void setQualityClamped(int quality) {
+    public void setQuality(int quality) {
         this.quality = Math.max(0, Math.min(100, quality));
     }
 

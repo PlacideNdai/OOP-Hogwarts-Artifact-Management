@@ -136,35 +136,6 @@ public class WizardView extends VBox {
         wizardTable.getColumns().setAll(idCol, nameCol, actionCol);
         wizardTable.setItems(wizardData);
         wizardTable.setPrefHeight(300);
-
-// ************************************************************************************************
-// sorting the table below
-// ************************************************************************************************
-        // nameCol.setComparator((a, b) -> {
-        //     boolean nameAIsEmpty = (a == null || a.isBlank());
-        //     boolean nameBIsEmpty = (b == null || b.isBlank());
-
-        //     if (nameAIsEmpty && nameBIsEmpty) {
-        //         return 0;
-        //     }
-
-        //     if (nameAIsEmpty) {
-        //         return -1;
-        //     }
-
-        //     if (nameBIsEmpty) {
-        //         return 1;
-        //     }
-
-        //     return a.compareToIgnoreCase(b);
-        // });
-
-        // wizardTable.getSortOrder().add(nameCol);
-
-// ************************************************************************************************
-// sorting the table above
-// ************************************************************************************************
-
         return wizardTable;
     }
 
@@ -247,7 +218,15 @@ public class WizardView extends VBox {
         dialog.setHeaderText("Assign to " + wizard.getName());
 
         dialog.showAndWait().ifPresent(artifact -> {
-            controller.assignArtifactToWizard(wizard, artifact);
+            // if false, then print a message.
+            if(controller.assignArtifactToWizard(wizard, artifact)){
+                wizardData.setAll(controller.findAllWizards());
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "The artifact quality is not high enough. \n You can not have artifacts with a quality less than 10.");
+                alert.setHeaderText("Artifact Quality ");
+                alert.showAndWait();
+            }
+
             wizardData.setAll(controller.findAllWizards());
             wizardTable.getSelectionModel().select(wizard);
         });

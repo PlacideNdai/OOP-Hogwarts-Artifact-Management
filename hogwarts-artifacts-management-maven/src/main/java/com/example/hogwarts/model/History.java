@@ -1,3 +1,4 @@
+
 package com.example.hogwarts.model;
 
 import java.time.LocalDateTime;

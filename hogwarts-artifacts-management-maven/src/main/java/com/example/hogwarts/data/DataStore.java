@@ -125,7 +125,7 @@ public class DataStore {
             return false;
 
         // quality check.
-        if(artifact.getQuality() < artifact.MINMAL_TRADE_QUALITY){
+        if (artifact.getQuality() < artifact.MINMAL_TRADE_QUALITY) {
             return false;
         }
 
@@ -183,6 +183,14 @@ public class DataStore {
             return List.of();
 
         return artifactHistories.getOrDefault(artifact, List.of());
+    }
+
+    // ************************************************************************************************
+    // getting all history.
+    // ************************************************************************************************
+
+    public Map<Artifact, List<History>> findAllHistory() {
+        return artifactHistories;
     }
 
     // adding to the history method.

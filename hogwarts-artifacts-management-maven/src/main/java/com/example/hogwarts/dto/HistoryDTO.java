@@ -9,6 +9,8 @@ public class HistoryDTO {
     private int artifactId;
     private LocalDateTime timestamp;
 
+    public HistoryDTO() {}
+
     public HistoryDTO(String action, String fromWizard, String toWizard, int artifactId,
             LocalDateTime timestamp) {
         this.action = action;

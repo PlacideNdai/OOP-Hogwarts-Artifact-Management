@@ -1,6 +1,7 @@
 package com.example.hogwarts.data;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import com.example.hogwarts.dto.FromDtoConverter;
 import com.example.hogwarts.dto.HistoryDTO;
 import com.example.hogwarts.dto.WizardDTO;
 import com.example.hogwarts.model.Artifact;
+import com.example.hogwarts.model.History;
 import com.example.hogwarts.model.Wizard;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,23 +39,41 @@ public class JsonPersistance {
 
                 if (file.getName().toLowerCase().contains("wizard")) {
                     // loading wizards from WizardDTO.
-                    List<WizardDTO> wizardDTOs = mapper.readValue(file, new TypeReference<List<WizardDTO>>() {});
+                    List<WizardDTO> wizardDTOs = mapper.readValue(file, new TypeReference<List<WizardDTO>>() {
+                    });
 
-                    Map<Integer, Wizard> wizards = wizardDTOs.stream().map(FromDtoConverter::toWizard).collect(Collectors.toMap(Wizard::getId, w -> w));
+                    Map<Integer, Wizard> wizards = wizardDTOs.stream().map(FromDtoConverter::toWizard)
+                            .collect(Collectors.toMap(Wizard::getId, w -> w));
                     wizards.values().forEach(store::addWizard);
 
                 } else if (file.getName().toLowerCase().contains("artifact")) {
                     // loading artifacts from ArtifactDTO.
-                    List<ArtifactDTO> artifactDTOs = mapper.readValue(file, new TypeReference<List<ArtifactDTO>>() {});
+                    List<ArtifactDTO> artifactDTOs = mapper.readValue(file, new TypeReference<List<ArtifactDTO>>() {
+                    });
 
-                    Map<Integer, Artifact> artifacts = artifactDTOs.stream().map(FromDtoConverter::toArtifact).collect(Collectors.toMap(Artifact::getId, a -> a));
+                    Map<Integer, Artifact> artifacts = artifactDTOs.stream().map(FromDtoConverter::toArtifact)
+                            .collect(Collectors.toMap(Artifact::getId, a -> a));
                     artifacts.values().forEach(store::addArtifact);
 
                 } else if (file.getName().toLowerCase().contains("transfer")) {
                     // loading history from HistoryDTO.
-                    List<HistoryDTO> historyDTOs = mapper.readValue(file,new TypeReference<List<HistoryDTO>>() {});
 
-                    
+                    Map<String, HistoryDTO> historyDTOMap = mapper.readValue(
+                            file, new TypeReference<Map<String, HistoryDTO>>() {
+                            });
+
+                    List<HistoryDTO> historyDTOs = new ArrayList<>(historyDTOMap.values());
+
+                    List<History> histories = historyDTOs.stream().map(historyDTO -> {
+                        Wizard fromWizard = store.findWizardByName(historyDTO.getFromWizard());
+                        Wizard toWizard = store.findWizardByName(historyDTO.getToWizard());
+                        Artifact artifact = store.findArtifactById(historyDTO.getArtifact());
+
+                        return FromDtoConverter.toHistory(historyDTO, fromWizard, toWizard, artifact);
+                    }).collect(Collectors.toList());
+
+                    histories.forEach(his -> store.addToHistory(his.getFromWizard(), his.getToWizard(),
+                            his.getArtifact(), his.getAction()));
                 }
             }
         } catch (Exception e) {

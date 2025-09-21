@@ -7,6 +7,8 @@ public class WizardDTO {
     private String name;
     private List<ArtifactDTO> artifacts;
 
+    public WizardDTO() {}
+
     public WizardDTO(int id, String name, List<ArtifactDTO> artifacts) {
         this.id = id;
         this.name = name;

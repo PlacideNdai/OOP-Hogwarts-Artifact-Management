@@ -96,6 +96,11 @@ public class DataStore {
         return this.wizards.get(id);
     }
 
+    // getting the wizard by name.
+    public Wizard findWizardByName(String name){
+        return this.wizards.values().stream().filter(w -> w.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+    }
+
     // Artifacts
     public Artifact addArtifact(Artifact artifact) {
         artifact.setId(artifactIdCounter++);
@@ -140,7 +145,8 @@ public class DataStore {
     // adding the serach feature for artifacts below
     // ************************************************************************************************
     public Collection<Artifact> findAllArtifactsByArtifactName(String artifactName) {
-        return this.artifacts.values().stream().filter(a -> a.getName().contains(artifactName)).toList();
+        String searchName = artifactName.toLowerCase();
+        return this.artifacts.values().stream().filter(a -> a.getName().toLowerCase().contains(searchName)).toList();
     }
 
     // ************************************************************************************************

@@ -7,6 +7,8 @@ public class ArtifactDTO {
     private int ownerId;
     private int quality;
 
+    public ArtifactDTO() {}
+    
     public ArtifactDTO(int id, int ownerId, String name, String description, int quality) {
         this.id = id;
         this.ownerId = ownerId;

@@ -10,6 +10,7 @@ import com.example.hogwarts.dto.ArtifactDTO;
 import com.example.hogwarts.dto.ToDTOConverter;
 import com.example.hogwarts.dto.HistoryDTO;
 import com.example.hogwarts.dto.WizardDTO;
+import com.example.hogwarts.model.Wizard;
 
 public class JsonPersistanceController {
     private final JsonPersistance jsonPersistance = new JsonPersistance();
@@ -41,6 +42,7 @@ public class JsonPersistanceController {
     }
 
     public void loadDataOnStartUp() {
+        
         // jsonPersistance.loadDataOnStartUp("artifacts.json");
         // jsonPersistance.loadDataOnStartUp("wizards.json");
         // jsonPersistance.loadDataOnStartUp("transfers.json");

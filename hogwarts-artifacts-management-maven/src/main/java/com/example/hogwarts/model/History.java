@@ -20,6 +20,14 @@ public class History {
         this.action = action;
     }
 
+    public History(Wizard fromWizard, Wizard toWizard, Artifact artifact, String action, LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+        this.fromWizard = fromWizard;
+        this.toWizard = toWizard;
+        this.artifact = artifact;
+        this.action = action;
+    }
+
     public LocalDateTime getTimestamp() {
         return timestamp;
     }

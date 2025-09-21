@@ -9,12 +9,15 @@ import com.example.hogwarts.model.History;
 import com.example.hogwarts.model.Wizard;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class JsonPersistance {
     private final DataStore store = DataStore.getInstance();
     private final ObjectMapper mapper = new ObjectMapper();
+    private final String storeLocation = "data/";
 
     public JsonPersistance() {
+        mapper.registerModule(new JavaTimeModule());
     }
 
     public void loadDataOnStartUp(String fileName) {
@@ -87,7 +90,7 @@ public class JsonPersistance {
 
     public void writeIntoJsonOnExist(Object object, String fileName) {
         try {
-            File fileToWriteInto = new File(fileName);
+            File fileToWriteInto = new File( storeLocation + fileName);
 
             if (fileToWriteInto.getParentFile() != null) {
                 fileToWriteInto.getParentFile().mkdirs();

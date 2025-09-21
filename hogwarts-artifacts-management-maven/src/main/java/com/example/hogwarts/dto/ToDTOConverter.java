@@ -7,7 +7,7 @@ import com.example.hogwarts.model.Artifact;
 import com.example.hogwarts.model.History;
 import com.example.hogwarts.model.Wizard;
 
-public class DTOConverter {
+public class ToDTOConverter {
     // ************************************************************************************************
     // converting wizard to DTO.
     // ************************************************************************************************
@@ -35,7 +35,12 @@ public class DTOConverter {
     // ************************************************************************************************
 
     public static HistoryDTO toHistoryDTO(History history) {
-        return new HistoryDTO(history.getAction(), history.getFromWizard().getName(), history.getToWizard().getName(),
-                history.getArtifact().getId(), history.getTimestamp());
+        String fromName = (history.getFromWizard() != null? history.getFromWizard().getName() : null);
+        String toName = (history.getToWizard() != null? history.getToWizard().getName() : null);
+        int artifactId = (history.getArtifact() != null? history.getArtifact().getId() : -1);
+
+
+        return new HistoryDTO(history.getAction(), fromName, toName,
+                artifactId, history.getTimestamp());
     }
 }

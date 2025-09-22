@@ -1,0 +1,28 @@
+{
+  "1" : [ {
+    "action" : "ASSIGN",
+    "fromWizard" : null,
+    "toWizard" : "Harry Potter",
+    "timestamp" : [ 2025, 9, 21, 22, 49, 0, 148576112 ],
+    "artifact" : 1
+  } ],
+  "2" : [ {
+    "action" : "ASSIGN",
+    "fromWizard" : null,
+    "toWizard" : "Hermione Granger",
+    "timestamp" : [ 2025, 9, 21, 22, 49, 0, 150367174 ],
+    "artifact" : 2
+  }, {
+    "action" : "UNASSIGN",
+    "fromWizard" : "Hermione Granger",
+    "toWizard" : null,
+    "timestamp" : [ 2025, 9, 21, 22, 49, 0, 150387716 ],
+    "artifact" : 2
+  }, {
+    "action" : "ASSIGN",
+    "fromWizard" : null,
+    "toWizard" : "Harry Potter",
+    "timestamp" : [ 2025, 9, 21, 22, 49, 0, 150400493 ],
+    "artifact" : 2
+  } ]
+}

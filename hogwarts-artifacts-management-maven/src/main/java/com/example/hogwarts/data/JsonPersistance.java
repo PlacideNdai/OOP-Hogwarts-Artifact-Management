@@ -87,7 +87,6 @@ public class JsonPersistance {
                                     }
                                     break;
                                 default:
-                                    // maybe log unexpected action
                                     break;
                             }
                         }

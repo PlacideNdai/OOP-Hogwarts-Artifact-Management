@@ -1,0 +1,21 @@
+[ {
+  "id" : 1,
+  "name" : "Harry Potter",
+  "artifacts" : [ {
+    "id" : 1,
+    "name" : "Invisibility Cloak",
+    "description" : "A magical cloak that makes the wearer invisible.",
+    "quality" : 95,
+    "owner" : 1
+  }, {
+    "id" : 2,
+    "name" : "Time-Turner",
+    "description" : "A device used for time travel.",
+    "quality" : 90,
+    "owner" : 1
+  } ]
+}, {
+  "id" : 2,
+  "name" : "Hermione Granger",
+  "artifacts" : [ ]
+} ]

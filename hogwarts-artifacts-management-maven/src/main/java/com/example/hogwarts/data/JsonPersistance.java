@@ -2,6 +2,7 @@ package com.example.hogwarts.data;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,11 +59,22 @@ public class JsonPersistance {
                 } else if (file.getName().toLowerCase().contains("transfer")) {
                     // loading history from HistoryDTO.
 
-                    Map<String, HistoryDTO> historyDTOMap = mapper.readValue(
-                            file, new TypeReference<Map<String, HistoryDTO>>() {
-                            });
+                    // Map<String, HistoryDTO> historyDTOMap = mapper.readValue(
+                    // file, new TypeReference<Map<String, HistoryDTO>>() {
+                    // });
 
-                    List<HistoryDTO> historyDTOs = new ArrayList<>(historyDTOMap.values());
+                    // List<HistoryDTO> historyDTOs = historyDTOMap.values().stream()
+                    // .flatMap(list -> list.stream())
+                    // .collect(Collectors.toList());
+
+                    TypeReference<Map<String, List<HistoryDTO>>> tr = new TypeReference<Map<String, List<HistoryDTO>>>() {
+                    };
+
+                    Map<String, List<HistoryDTO>> historyDTOMap = mapper.readValue(file, tr);
+
+                    List<HistoryDTO> historyDTOs = historyDTOMap.values().stream()
+                            .flatMap(List::stream) // or Collection::stream
+                            .collect(Collectors.toList());
 
                     List<History> histories = historyDTOs.stream().map(historyDTO -> {
                         Wizard fromWizard = store.findWizardByName(historyDTO.getFromWizard());

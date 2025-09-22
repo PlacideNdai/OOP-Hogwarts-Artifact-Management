@@ -1,8 +1,6 @@
 package com.example.hogwarts.data;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,27 +57,40 @@ public class JsonPersistance {
                 } else if (file.getName().toLowerCase().contains("transfer")) {
                     // loading history from HistoryDTO.
 
-                    // Map<String, HistoryDTO> historyDTOMap = mapper.readValue(
-                    // file, new TypeReference<Map<String, HistoryDTO>>() {
-                    // });
-
-                    // List<HistoryDTO> historyDTOs = historyDTOMap.values().stream()
-                    // .flatMap(list -> list.stream())
-                    // .collect(Collectors.toList());
-
                     TypeReference<Map<String, List<HistoryDTO>>> tr = new TypeReference<Map<String, List<HistoryDTO>>>() {
                     };
 
                     Map<String, List<HistoryDTO>> historyDTOMap = mapper.readValue(file, tr);
 
                     List<HistoryDTO> historyDTOs = historyDTOMap.values().stream()
-                            .flatMap(List::stream) // or Collection::stream
+                            .flatMap(List::stream)
                             .collect(Collectors.toList());
 
+                    // ************************************************************************************************
+                    // History loading and artifact assigning.
+                    // ************************************************************************************************
                     List<History> histories = historyDTOs.stream().map(historyDTO -> {
                         Wizard fromWizard = store.findWizardByName(historyDTO.getFromWizard());
                         Wizard toWizard = store.findWizardByName(historyDTO.getToWizard());
                         Artifact artifact = store.findArtifactById(historyDTO.getArtifact());
+
+                        if (artifact != null) {
+                            switch (historyDTO.getAction()) {
+                                case "ASSIGN":
+                                    if (toWizard != null) {
+                                        toWizard.addArtifact(artifact);
+                                    }
+                                    break;
+                                case "UNASSIGN":
+                                    if (fromWizard != null) {
+                                        fromWizard.removeArtifact(artifact);
+                                    }
+                                    break;
+                                default:
+                                    // maybe log unexpected action
+                                    break;
+                            }
+                        }
 
                         return FromDtoConverter.toHistory(historyDTO, fromWizard, toWizard, artifact);
                     }).collect(Collectors.toList());

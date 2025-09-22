@@ -37,20 +37,20 @@ public class DataStore {
         this.users.add(new User("user3", "123", Role.USER));
 
         // Sample data
-        Wizard w1 = new Wizard("Harry Potter");
-        Wizard w2 = new Wizard("Hermione Granger");
+        // Wizard w1 = new Wizard("Harry Potter");
+        // Wizard w2 = new Wizard("Hermione Granger");
 
-        this.addWizard(w1);
-        this.addWizard(w2);
+        // this.addWizard(w1);
+        // this.addWizard(w2);
 
-        Artifact a1 = new Artifact("Invisibility Cloak", "A magical cloak that makes the wearer invisible.", 100);
-        Artifact a2 = new Artifact("Time-Turner", "A device used for time travel.", 100);
+        // Artifact a1 = new Artifact("Invisibility Cloak", "A magical cloak that makes the wearer invisible.", 100);
+        // Artifact a2 = new Artifact("Time-Turner", "A device used for time travel.", 100);
         
-        this.addArtifact(a1);
-        this.addArtifact(a2);
+        // this.addArtifact(a1);
+        // this.addArtifact(a2);
 
-        this.assignArtifactToWizard(a1.getId(), w1.getId());
-        this.assignArtifactToWizard(a2.getId(), w2.getId());
+        // this.assignArtifactToWizard(a1.getId(), w1.getId());
+        // this.assignArtifactToWizard(a2.getId(), w2.getId());
     }
 
     public static DataStore getInstance() {

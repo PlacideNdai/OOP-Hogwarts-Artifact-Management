@@ -39,21 +39,15 @@ public class DataStore {
         // Sample data
         Wizard w1 = new Wizard("Harry Potter");
         Wizard w2 = new Wizard("Hermione Granger");
-        Wizard w3 = new Wizard("John B");
-        Wizard w4 = new Wizard("Henry Johnson");
+
         this.addWizard(w1);
         this.addWizard(w2);
-        this.addWizard(w3);
-        this.addWizard(w4);
 
         Artifact a1 = new Artifact("Invisibility Cloak", "A magical cloak that makes the wearer invisible.", 100);
         Artifact a2 = new Artifact("Time-Turner", "A device used for time travel.", 100);
-        Artifact a3 = new Artifact("Iron man suit", "A robotic suit.", 100);
-        Artifact a4 = new Artifact("Thor Hammer", "Thunders coming for destruction", 100);
+        
         this.addArtifact(a1);
         this.addArtifact(a2);
-        this.addArtifact(a3);
-        this.addArtifact(a4);
 
         this.assignArtifactToWizard(a1.getId(), w1.getId());
         this.assignArtifactToWizard(a2.getId(), w2.getId());
